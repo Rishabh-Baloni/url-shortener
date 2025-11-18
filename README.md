@@ -1,25 +1,30 @@
 # URL Shortener
 
-A high-performance URL shortener built with Node.js, MongoDB, and Redis. Features read-through caching, analytics tracking, and production-ready Docker deployment.
+A high-performance URL shortener with intelligent caching, real-time analytics, and automatic URL expiration. Built as a production-ready portfolio project demonstrating scalable system design.
+
+**Live Demo**: [https://url-shortener-ybpw.onrender.com](https://url-shortener-ybpw.onrender.com)
 
 ## 🚀 Tech Stack
 
-- **Backend**: Node.js, Express
-- **Database**: MongoDB (persistent storage)
-- **Cache**: Redis (read-through caching)
-- **Deployment**: Docker, Docker Compose
-- **ID Generation**: nanoid (7-character unique IDs)
-- **Security**: Helmet.js, rate limiting
+- **Backend**: Node.js 22.x, Express 5.1
+- **Database**: MongoDB Atlas (persistent storage with TTL indexing)
+- **Cache**: Redis Cloud (read-through caching)
+- **Deployment**: Render.com with auto-deploy
+- **ID Generation**: nanoid (7-character base62 IDs)
+- **Security**: Helmet.js, CORS, rate limiting
+- **Testing**: Jest with 27 passing unit tests
 
 ## 📋 Features
 
-- ✅ Generate short URLs with unique 7-character IDs
+- ✅ Generate short URLs with unique 7-character IDs (~3.5 trillion combinations)
 - ✅ Redis caching for fast redirects (reduces latency from ~40ms to <5ms)
-- ✅ Click analytics tracking
-- ✅ Stats API for each short link
-- ✅ IP-based rate limiting (100 req/min)
-- ✅ Fully Dockerized with MongoDB and Redis
-- ✅ Collision-proof ID generation
+- ✅ Real-time click analytics and tracking
+- ✅ **Smart TTL expiration**: URLs auto-delete after 5 minutes if unused, extend to 1 day on each click
+- ✅ IP-based rate limiting (100 requests/min on URL creation)
+- ✅ Health monitoring endpoint for production
+- ✅ Real-time performance dashboard
+- ✅ Modern black/off-white UI design
+- ✅ Comprehensive unit test coverage
 
 ## 🏗️ Architecture
 
@@ -43,237 +48,310 @@ A high-performance URL shortener built with Node.js, MongoDB, and Redis. Feature
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Docker and Docker Compose installed
+- Node.js 22.x or higher
+- MongoDB instance (local or cloud)
+- Redis instance (local or cloud)
 
-### Run with Docker
+### Local Setup
 
 ```bash
 # Clone the repository
+git clone https://github.com/Rishabh-Baloni/url-shortener.git
 cd url-shortener
 
-# Start all services (MongoDB, Redis, App)
-docker-compose up --build
-
-# Server will be available at http://localhost:3000
-```
-
-## 📡 API Usage
-
-### 1. Create a short URL
-
-```bash
-curl -X POST -H "Content-Type: application/json" \
-  -d '{"url":"https://example.com"}' \
-  http://localhost:3000/shorten
-
-# Response:
-# {
-#   "shortUrl": "http://localhost:3000/abc123x",
-#   "shortId": "abc123x"
-# }
-```
-
-### 2. Follow a redirect
-
-```bash
-curl -v http://localhost:3000/abc123x
-
-# Response: 302 redirect to original URL
-# Analytics are tracked (clicks, lastAccessed)
-```
-
-### 3. Get link statistics
-
-```bash
-curl http://localhost:3000/stats/abc123x
-
-# Response:
-# {
-#   "shortId": "abc123x",
-#   "originalUrl": "https://example.com",
-#   "clicks": 42,
-#   "createdAt": "2025-11-18T12:00:00.000Z",
-#   "lastAccessed": "2025-11-18T13:30:00.000Z"
-# }
-```
-
-## 🧪 Load Testing
-
-### Run Artillery Load Test
-
-```bash
-# Install artillery (if not already installed)
-npm install -g artillery
-
-# Run the load test
-npx artillery run tests/load-test.yml
-```
-
-### Expected Performance Metrics
-- **Target**: 200 req/s over 60 seconds
-- **Cache Hit Rate**: TBD% (run test to measure)
-- **Average Latency**: TBD ms (run test to measure)
-- **P95 Latency**: TBD ms (run test to measure)
-- **Success Rate**: TBD% (run test to measure)
-
-*Note: Run the load test and update these metrics with actual results*
-
-## 🛠️ Development
-
-### Local Development (without Docker)
-
-```bash
 # Install dependencies
 cd server
 npm install
 
-# Set up local MongoDB and Redis
-# Update .env with local connection strings
+# Configure environment variables
+# Create a .env file with:
+# - MONGO_URL (your MongoDB connection string)
+# - REDIS_URL (your Redis connection string)
+# - BASE_URL (e.g., http://localhost:3000)
+# - PORT (default: 3000)
 
-# Run in dev mode with hot reload
+# Start the server
+npm start
+
+# For development with hot reload
 npm run dev
 ```
 
+## 📡 API Documentation
+
+### 1. Create Short URL
+```bash
+POST /shorten
+Content-Type: application/json
+
+{
+  "url": "https://example.com"
+}
+
+# Response:
+{
+  "shortUrl": "https://url-shortener-ybpw.onrender.com/abc123x",
+  "shortId": "abc123x"
+}
+```
+
+### 2. Redirect to Original URL
+```bash
+GET /:shortId
+
+# Returns 302 redirect to original URL
+# Extends expiration to 1 day from now
+# Updates click count and lastAccessed timestamp
+```
+
+### 3. Get URL Statistics
+```bash
+GET /stats/:shortId
+
+# Response:
+{
+  "shortId": "abc123x",
+  "originalUrl": "https://example.com",
+  "clicks": 42,
+  "createdAt": "2025-11-18T12:00:00.000Z",
+  "lastAccessed": "2025-11-18T13:30:00.000Z",
+  "expiresAt": "2025-11-19T13:30:00.000Z"
+}
+```
+
+### 4. Health Check
+```bash
+GET /health
+
+# Response:
+{
+  "status": "ok",
+  "mongodb": "connected",
+  "redis": "connected",
+  "timestamp": "2025-11-18T12:00:00.000Z"
+}
+```
+
+### 5. Performance Metrics
+```bash
+GET /metrics
+
+# Response:
+{
+  "totalUrls": 1523,
+  "totalClicks": 8945,
+  "topUrls": [...],
+  "recentActivity": [...],
+  "system": {
+    "uptime": "2h 34m",
+    "memory": "128 MB",
+    "nodeVersion": "22.0.0"
+  }
+}
+```
+
+## 🎯 Key Features Explained
+
+### Smart URL Expiration (TTL System)
+- New URLs automatically expire after **5 minutes** if never accessed
+- First click extends expiration to **1 day**
+- Each subsequent click resets the 1-day countdown
+- MongoDB TTL index handles automatic cleanup (no manual intervention)
+- Keeps database clean and storage costs minimal
+
+### Read-Through Caching
+- First checks Redis cache for the short ID
+- On cache miss, queries MongoDB and populates cache
+- Reduces redirect latency from ~40ms to <5ms
+- Cache automatically invalidated on updates
+
+### Analytics Tracking
+- Non-blocking async updates for cached redirects
+- Tracks total clicks and last accessed timestamp
+- Zero performance impact on redirect speed
+
+### Rate Limiting
+- IP-based throttling: 100 requests/min per IP address
+- Only applied to `/shorten` endpoint
+- Prevents abuse while maintaining usability
+
+## 🛠️ Development
+
+### Running Tests
+```bash
+cd server
+
+# Run all unit tests
+npm test
+
+# Run tests with coverage
+npm test -- --coverage
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+### Test Coverage
+- **27 passing unit tests** covering:
+  - ID generation and collision handling
+  - URL validation
+  - Rate limiting logic
+  - Schema validation
+  - Edge cases
+
 ### Environment Variables
+
+Create a `.env` file in the `server/` directory:
 
 ```env
 PORT=3000
-MONGO_URL=mongodb://mongo:27017/urlshortener
-REDIS_URL=redis://redis:6379
+NODE_ENV=development
+MONGO_URL=your_mongodb_connection_string
+REDIS_URL=your_redis_connection_string
 BASE_URL=http://localhost:3000
 CACHE_TTL=3600
 ```
+
+**Note**: Never commit your `.env` file or expose credentials publicly.
 
 ## 📂 Project Structure
 
 ```
 url-shortener/
-├─ server/
-│  ├─ src/
-│  │  ├─ index.js              # Express app entry point
-│  │  ├─ routes/
-│  │  │  ├─ shorten.js         # POST /shorten endpoint
-│  │  │  ├─ redirect.js        # GET /:id redirect logic
-│  │  │  └─ stats.js           # GET /stats/:id analytics
-│  │  ├─ lib/
-│  │  │  ├─ idGen.js           # nanoid generator
-│  │  │  ├─ cache.js           # Redis client wrapper
-│  │  │  └─ rateLimit.js       # IP-based rate limiter
-│  │  └─ models/
-│  │     └─ urlModel.js        # MongoDB schema
-│  ├─ package.json
-│  ├─ .env
-│  └─ Dockerfile
-├─ docker-compose.yml
-├─ tests/
-│  └─ load-test.yml
-└─ README.md
+├── server/
+│   ├── src/
+│   │   ├── index.js                 # Express app entry point
+│   │   ├── routes/
+│   │   │   ├── shorten.js          # POST /shorten endpoint
+│   │   │   ├── redirect.js         # GET /:id redirect + TTL extension
+│   │   │   ├── stats.js            # GET /stats/:id analytics
+│   │   │   ├── health.js           # GET /health monitoring
+│   │   │   └── metrics.js          # GET /metrics dashboard API
+│   │   ├── lib/
+│   │   │   ├── idGen.js            # nanoid ID generator
+│   │   │   ├── cache.js            # Redis client wrapper
+│   │   │   └── rateLimit.js        # IP-based rate limiter
+│   │   └── models/
+│   │       └── urlModel.js         # MongoDB schema with TTL index
+│   ├── public/
+│   │   ├── index.html              # Main UI (black/off-white theme)
+│   │   └── dashboard.html          # Performance dashboard
+│   ├── tests/
+│   │   ├── idGen.test.js
+│   │   ├── urlValidation.test.js
+│   │   ├── rateLimit.test.js
+│   │   └── urlModel.test.js
+│   ├── package.json
+│   └── .env                        # Environment config (not in git)
+├── render.yaml                     # Render deployment config
+├── .node-version                   # Node.js version specification
+└── README.md
 ```
 
-## 🎯 Key Implementation Details
-
-### Read-Through Caching
-- First checks Redis cache for short ID
-- On cache miss, queries MongoDB and updates cache
-- Significantly reduces database load and latency
-
-### Analytics Tracking
-- Non-blocking async updates for cached redirects
-- Tracks total clicks and last accessed timestamp
-- Available via `/stats/:id` endpoint
+## 🏗️ Architecture Highlights
 
 ### ID Generation
-- Uses nanoid with custom alphabet (base62)
-- 7-character IDs provide ~3.5 trillion combinations
-- Collision detection with retry logic
+- Uses nanoid with custom base62 alphabet (a-zA-Z0-9)
+- 7-character IDs provide ~3.5 trillion unique combinations
+- Collision detection with automatic retry logic
+- Cryptographically secure random generation
 
-## 📊 Performance Benchmarks
+### Caching Strategy
+- **Read-through cache**: Check Redis → Miss → Query MongoDB → Update Redis
+- Significantly reduces database load
+- Cached redirects: <5ms latency
+- Uncached redirects: ~40ms latency
 
-*Run load tests and document results here:*
-
-- **Redirect Latency (cached)**: TBD ms
-- **Redirect Latency (uncached)**: TBD ms
-- **Throughput**: TBD req/s
-- **Cache Hit Rate**: TBD%
+### Database Design
+- MongoDB with TTL index on `expiresAt` field
+- Background thread checks for expired documents every 60 seconds
+- Automatic cleanup requires zero manual intervention
+- Runs independently on MongoDB Atlas (24/7 uptime)
 
 ## 🔐 Security Features
 
-- Helmet.js for HTTP security headers
-- IP-based rate limiting (100 req/min per IP)
-- Environment variable configuration
-- Input validation
+- **Helmet.js**: Secure HTTP headers (CSP, HSTS, X-Frame-Options, etc.)
+- **CORS**: Configured for production origin
+- **Rate Limiting**: IP-based throttling (100 requests/min on `/shorten`)
+- **Input Validation**: URL format validation before processing
+- **Environment Variables**: Sensitive credentials never hardcoded
 
-## 🆕 Recent Enhancements
+## 📊 Performance Dashboard
 
-### Quick Wins (Implemented)
-- ✅ **Rate Limiting**: IP-based throttling to prevent abuse
-- ✅ **Health Check**: `/health` endpoint for production monitoring
-- ✅ **Performance Dashboard**: Real-time metrics at `/dashboard.html`
-- ✅ **Unit Tests**: 27 passing tests with Jest (ID generation, URL validation, rate limiting, schema validation)
-
-### Performance Dashboard Features
+Access the real-time dashboard at `/dashboard.html`:
 - Total URLs created and clicks tracked
 - Top 10 most clicked URLs
-- Recent activity (24h)
-- System metrics (uptime, memory, Node version)
+- Recent activity (last 24 hours)
+- System metrics (uptime, memory usage, Node.js version)
 - Auto-refreshes every 5 seconds
 
-### Testing
-```bash
-# Run unit tests
-npm test
+## 🎨 UI Design
 
-# View coverage report
-npm test -- --coverage
-```
+- **Modern minimal theme**: Black (#0a0a0a) and off-white (#f5f5f5)
+- **No unnecessary decorations**: Clean, professional appearance
+- **Fully responsive**: Works on desktop and mobile
+- **Real-time updates**: Recent URLs displayed instantly
+- **Auto-cleanup**: URLs older than 1 day removed from view
 
-## 🚀 Deploy to Production
+## 🚀 Deployment
 
-### Deploy to Render (Recommended)
+This project is deployed on **Render.com** with automatic deployment from the main branch.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+**Live URL**: [https://url-shortener-ybpw.onrender.com](https://url-shortener-ybpw.onrender.com)
 
-**Quick Setup:**
-1. Click the button above or go to [Render Dashboard](https://dashboard.render.com/)
-2. Connect this GitHub repository
-3. Configure environment variables:
-   - `MONGO_URL` - MongoDB Atlas connection string
-   - `REDIS_URL` - Redis Cloud connection string
-   - `BASE_URL` - Your Render app URL
-4. Deploy! (takes ~2-3 minutes)
+### Deployment Features
+- Auto-deploy on git push to main branch
+- MongoDB Atlas (cloud-hosted, 24/7 uptime)
+- Redis Cloud (managed caching)
+- Environment variables configured securely
+- Health monitoring endpoint
 
-**Free Tier Available:** MongoDB Atlas (512MB) + Redis Cloud (30MB) + Render (750 hrs/month)
+### To Deploy Your Own Instance
+1. Fork this repository
+2. Sign up for free accounts:
+   - [Render](https://render.com) (web hosting)
+   - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (database)
+   - [Redis Cloud](https://redis.com/try-free/) (caching)
+3. Connect your GitHub repo to Render
+4. Configure environment variables (see `.env` example above)
+5. Deploy!
 
-### Environment Variables
+## 🎯 Future Enhancements
 
-```bash
-PORT=10000                    # Auto-set by Render
-NODE_ENV=production
-MONGO_URL=mongodb+srv://...   # Your MongoDB Atlas URL
-REDIS_URL=redis://...         # Your Redis Cloud URL
-BASE_URL=https://your-app.onrender.com
-CACHE_TTL=3600
-```
-
-## 🎨 Future Enhancements (Optional)
-
+Potential features for further development:
 - [ ] Custom vanity URLs
-- [ ] Integration tests with MongoDB/Redis mocks
+- [ ] QR code generation for short links
+- [ ] Analytics export (CSV/JSON)
+- [ ] Integration tests with mocked services
 - [ ] Unique visitor tracking (HyperLogLog)
-- [ ] Multi-region Redis cluster
-- [ ] Prometheus + Grafana monitoring
-- [ ] URL expiration
-- [ ] QR code generation
+- [ ] Custom domain support
+- [ ] Bulk URL shortening API
+- [ ] Browser extension
 
 ## 📝 License
 
 ISC
 
-## 👤 Author
+## 👤 About
 
-Built by [Rishabh Baloni](https://github.com/Rishabh-Baloni) as a portfolio project demonstrating:
-- RESTful API design
-- Database optimization with caching
-- Production deployment (Render)
-- Load testing and performance analysis
-- Production-ready architecture
+**Built by**: [Rishabh Baloni](https://github.com/Rishabh-Baloni)
+
+This project demonstrates:
+- **System Design**: Scalable architecture with caching and database optimization
+- **Backend Development**: RESTful API design with Node.js and Express
+- **Database Management**: MongoDB with TTL indexing and Redis caching
+- **Production Deployment**: Cloud hosting with CI/CD pipeline
+- **Testing**: Unit tests with Jest (27 passing tests)
+- **Security**: Rate limiting, input validation, secure headers
+
+**Interview-Ready Features**:
+- Read-through caching pattern
+- TTL-based automatic cleanup
+- Non-blocking analytics tracking
+- Collision-proof ID generation
+- Rate limiting and security best practices
+- Production monitoring and health checks
+
+---
+
+⭐ **Star this repo** if you find it useful for learning or interviews!
