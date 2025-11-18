@@ -22,7 +22,8 @@ router.post('/', async (req, res) => {
     // warm cache
     await set(`short:${shortId}`, { originalUrl: url })
 
-    res.json({ shortUrl: `${process.env.BASE_URL}/${shortId}`, shortId })
+    const baseUrl = process.env.BASE_URL?.replace(/\/$/, '') || 'http://localhost:3000'
+    res.json({ shortUrl: `${baseUrl}/${shortId}`, shortId })
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'server error' })
