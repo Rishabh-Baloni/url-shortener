@@ -7,3 +7,15 @@ build/
 coverage/
 .vscode/
 .idea/
+
+# Documentation files (keep locally, ignore in git)
+DEPLOYMENT_SUCCESS.md
+ENHANCEMENT_ROADMAP.md
+PROJECT_COMPLETE.md
+PROJECT_SUMMARY.md
+QUICK_WINS_SUMMARY.md
+USER_GUIDE.md
+WHAT_OTHERS_SEE.md
+Plan.txt
+Rules.txt
+test-app.ps1
