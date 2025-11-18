@@ -1,0 +1,53 @@
+config:
+  target: "https://url-shortener-ybpw.onrender.com"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 50
+      name: "Ramp up load"
+    - duration: 180
+      arrivalRate: 100
+      name: "Sustained load"
+    - duration: 60
+      arrivalRate: 200
+      name: "Peak load"
+  processor: "./load-test-processor.js"
+
+scenarios:
+  - name: "Create and redirect flow"
+    weight: 70
+    flow:
+      - post:
+          url: "/shorten"
+          json:
+            url: "https://example.com/{{ $randomString() }}"
+          capture:
+            - json: "$.shortId"
+              as: "shortId"
+      - get:
+          url: "/{{ shortId }}"
+          followRedirect: false
+      - think: 1
+
+  - name: "Stats check"
+    weight: 20
+    flow:
+      - post:
+          url: "/shorten"
+          json:
+            url: "https://example.com/test-{{ $randomNumber(1, 1000) }}"
+          capture:
+            - json: "$.shortId"
+              as: "shortId"
+      - get:
+          url: "/stats/{{ shortId }}"
+
+  - name: "Health and metrics"
+    weight: 10
+    flow:
+      - get:
+          url: "/health"
+      - get:
+          url: "/metrics"

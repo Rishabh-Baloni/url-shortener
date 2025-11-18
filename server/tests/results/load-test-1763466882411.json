@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-11-18T11:54:42.407Z",
+  "config": {
+    "target": "https://url-shortener-ybpw.onrender.com",
+    "duration": 60,
+    "concurrentUsers": 100
+  },
+  "summary": {
+    "duration": 60.658,
+    "totalRequests": 3686,
+    "successfulRequests": 400,
+    "failedRequests": 3286,
+    "requestsPerSecond": 60.76692274720564,
+    "successRate": 10.851871947911015
+  },
+  "redirect": {
+    "count": 300,
+    "avgLatency": 1469.1966666666667,
+    "minLatency": 403,
+    "maxLatency": 3204,
+    "p50": 1093,
+    "p95": 2691,
+    "p99": 3140
+  },
+  "shorten": {
+    "count": 100,
+    "avgLatency": 29984.48,
+    "minLatency": 27478,
+    "maxLatency": 33018,
+    "p95": 31283
+  },
+  "cache": {
+    "hits": 200,
+    "misses": 100,
+    "hitRate": 66.66666666666666
+  }
+}

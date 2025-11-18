@@ -1,8 +1,14 @@
 # URL Shortener
 
+![CI](https://github.com/Rishabh-Baloni/url-shortener/workflows/CI/badge.svg)
+
 A high-performance URL shortener with intelligent caching, real-time analytics, and automatic URL expiration. Built as a production-ready portfolio project demonstrating scalable system design.
 
 **Live Demo**: [https://url-shortener-ybpw.onrender.com](https://url-shortener-ybpw.onrender.com)
+
+**Performance**: Cache-hit redirects <5ms | Cache-miss redirects ~40ms | 66% cache hit rate in production
+
+**Interview-Ready**: See [INTERVIEW_PREP.md](./INTERVIEW_PREP.md) for deep technical discussions on caching, scaling, atomicity, and failure scenarios
 
 ## 🚀 Tech Stack
 
@@ -17,14 +23,15 @@ A high-performance URL shortener with intelligent caching, real-time analytics, 
 ## 📋 Features
 
 - ✅ Generate short URLs with unique 7-character IDs (~3.5 trillion combinations)
-- ✅ Redis caching for fast redirects (reduces latency from ~40ms to <5ms)
-- ✅ Real-time click analytics and tracking
+- ✅ Redis caching for fast redirects (cache-hit: <5ms, cache-miss: ~40ms)
+- ✅ Real-time click analytics with atomic MongoDB operations
 - ✅ **Smart TTL expiration**: URLs auto-delete after 5 minutes if unused, extend to 1 day on each click
 - ✅ IP-based rate limiting (100 requests/min on URL creation)
 - ✅ Health monitoring endpoint for production
-- ✅ Real-time performance dashboard
-- ✅ Modern black/off-white UI design
-- ✅ Comprehensive unit test coverage
+- ✅ Real-time performance dashboard with metrics API
+- ✅ Modern black/off-white UI design (no emojis, professional)
+- ✅ 30+ unit & integration tests with CI/CD pipeline
+- ✅ Graceful degradation (Redis failure → automatic MongoDB fallback)
 
 ## 🏗️ Architecture
 
@@ -268,6 +275,14 @@ url-shortener/
 - Automatic cleanup requires zero manual intervention
 - Runs independently on MongoDB Atlas (24/7 uptime)
 
+### Concurrency & Race Conditions
+- **Atomic Analytics**: MongoDB `$inc` operator for collision-free click counting
+- **Unique ID Guarantee**: MongoDB unique index + retry logic on collision
+- **Cache Safety**: Read-through pattern with immutable data (no cache invalidation needed)
+- **TTL Extension**: Concurrent updates safe (all set to "now + 1 day")
+
+See [INTERVIEW_PREP.md](./INTERVIEW_PREP.md) for detailed discussion on atomicity, scaling strategies, and failure handling.
+
 ## 🔐 Security Features
 
 - **Helmet.js**: Secure HTTP headers (CSP, HSTS, X-Frame-Options, etc.)
@@ -300,11 +315,12 @@ This project is deployed on **Render.com** with automatic deployment from the ma
 **Live URL**: [https://url-shortener-ybpw.onrender.com](https://url-shortener-ybpw.onrender.com)
 
 ### Deployment Features
-- Auto-deploy on git push to main branch
-- MongoDB Atlas (cloud-hosted, 24/7 uptime)
-- Redis Cloud (managed caching)
-- Environment variables configured securely
-- Health monitoring endpoint
+- **CI/CD**: GitHub Actions runs tests on every push (see `.github/workflows/ci.yml`)
+- **Auto-deploy**: Render deploys main branch automatically on successful merge
+- **MongoDB Atlas**: Cloud-hosted, 24/7 uptime, automatic TTL cleanup
+- **Redis Cloud**: Managed caching layer
+- **Environment variables**: Configured securely via Render dashboard
+- **Health monitoring**: `/health` endpoint for uptime checks
 
 ### To Deploy Your Own Instance
 1. Fork this repository
@@ -345,12 +361,20 @@ This project demonstrates:
 - **Security**: Rate limiting, input validation, secure headers
 
 **Interview-Ready Features**:
-- Read-through caching pattern
-- TTL-based automatic cleanup
-- Non-blocking analytics tracking
-- Collision-proof ID generation
-- Rate limiting and security best practices
+- Read-through caching pattern (cache-hit vs cache-miss performance)
+- TTL-based automatic cleanup (MongoDB background process)
+- Atomic analytics tracking (MongoDB `$inc` operator)
+- Collision-proof ID generation (3.5T combinations, retry logic)
+- Rate limiting and security best practices (Helmet.js, CORS)
 - Production monitoring and health checks
+- **CI/CD pipeline** with automated testing on every commit
+- **Comprehensive documentation**: [INTERVIEW_PREP.md](./INTERVIEW_PREP.md) covers:
+  - Cache correctness & read-through pattern
+  - Collision handling & probability math
+  - Scaling to millions of QPS (sharding, multi-region)
+  - Failure scenarios & availability (Redis down, DB failover)
+  - Race conditions & atomicity guarantees
+  - TTL implementation & edge cases
 
 ---
 
