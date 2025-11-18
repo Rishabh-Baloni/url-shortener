@@ -3,13 +3,23 @@ const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
 const helmet = require('helmet')
+const cors = require('cors')
 
 const shortenRoute = require('./routes/shorten')
 const redirectRoute = require('./routes/redirect')
 const statsRoute = require('./routes/stats')
 
 const app = express()
-app.use(helmet())
+
+// Configure Helmet with relaxed CSP for local development
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false
+}))
+
+// Enable CORS
+app.use(cors())
+
 app.use(morgan('tiny'))
 app.use(express.json())
 

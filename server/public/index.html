@@ -293,7 +293,7 @@
             >
         </div>
 
-        <button class="btn" onclick="shortenUrl()">✨ Shorten URL</button>
+        <button class="btn" id="shortenBtn">✨ Shorten URL</button>
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
@@ -306,7 +306,7 @@
             <h3>🎉 Your Short URL is Ready!</h3>
             <div class="short-url">
                 <input type="text" id="shortUrlInput" readonly>
-                <button class="copy-btn" onclick="copyUrl()">📋 Copy</button>
+                <button class="copy-btn" id="copyBtn">📋 Copy</button>
             </div>
             
             <div class="stats" id="stats">
@@ -492,6 +492,10 @@
                 shortenUrl();
             }
         });
+
+        // Add click event listeners
+        document.getElementById('shortenBtn').addEventListener('click', shortenUrl);
+        document.getElementById('copyBtn').addEventListener('click', copyUrl);
     </script>
 </body>
 </html>
