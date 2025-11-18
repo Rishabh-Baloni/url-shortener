@@ -13,13 +13,16 @@ app.use(helmet())
 app.use(morgan('tiny'))
 app.use(express.json())
 
+// Serve static files (frontend)
+app.use(express.static('public'))
+
 // optional rate limit middleware for POSTs
 // const rateLimit = require('./lib/rateLimit')
 // app.use('/shorten', rateLimit)
 
-app.use('/', redirectRoute)
 app.use('/shorten', shortenRoute)
 app.use('/stats', statsRoute)
+app.use('/', redirectRoute)
 
 const PORT = process.env.PORT || 3000
 mongoose.connect(process.env.MONGO_URL)
