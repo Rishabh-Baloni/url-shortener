@@ -1,15 +1,18 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Production-grade URL Shortener with MongoDB and Redis",
+  "main": "src/index.js",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "jest --coverage"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["url-shortener", "nodejs", "express", "mongodb", "redis"],
+  "author": "Rishabh Baloni",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: url-shortener
+    env: node
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: BASE_URL
+        sync: false
+      - key: CACHE_TTL
+        value: 3600

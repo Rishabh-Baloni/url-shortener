@@ -227,6 +227,34 @@ npm test
 npm test -- --coverage
 ```
 
+## 🚀 Deploy to Production
+
+### Deploy to Render (Recommended)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+**Quick Setup:**
+1. Click the button above or go to [Render Dashboard](https://dashboard.render.com/)
+2. Connect this GitHub repository
+3. Configure environment variables:
+   - `MONGO_URL` - MongoDB Atlas connection string
+   - `REDIS_URL` - Redis Cloud connection string
+   - `BASE_URL` - Your Render app URL
+4. Deploy! (takes ~2-3 minutes)
+
+**Free Tier Available:** MongoDB Atlas (512MB) + Redis Cloud (30MB) + Render (750 hrs/month)
+
+### Environment Variables
+
+```bash
+PORT=10000                    # Auto-set by Render
+NODE_ENV=production
+MONGO_URL=mongodb+srv://...   # Your MongoDB Atlas URL
+REDIS_URL=redis://...         # Your Redis Cloud URL
+BASE_URL=https://your-app.onrender.com
+CACHE_TTL=3600
+```
+
 ## 🎨 Future Enhancements (Optional)
 
 - [ ] Custom vanity URLs
@@ -243,9 +271,9 @@ ISC
 
 ## 👤 Author
 
-Built as a portfolio project demonstrating:
+Built by [Rishabh Baloni](https://github.com/Rishabh-Baloni) as a portfolio project demonstrating:
 - RESTful API design
 - Database optimization with caching
-- Docker containerization
+- Production deployment (Render)
 - Load testing and performance analysis
 - Production-ready architecture
