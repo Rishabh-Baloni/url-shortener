@@ -22,6 +22,12 @@ app.use('/shorten', shortenRoute)
 app.use('/stats', statsRoute)
 
 const PORT = process.env.PORT || 3000
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => app.listen(PORT, () => console.log(`Server running on ${PORT}`)))
-  .catch(err => console.error('DB connect error', err))
+mongoose.connect(process.env.MONGO_URL)
+  .then(() => {
+    console.log('✅ MongoDB connected successfully')
+    app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`))
+  })
+  .catch(err => {
+    console.error('❌ DB connect error:', err.message)
+    process.exit(1)
+  })
