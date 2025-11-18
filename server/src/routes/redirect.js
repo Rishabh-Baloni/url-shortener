@@ -5,6 +5,12 @@ const { get, set } = require('../lib/cache')
 
 router.get('/:id', async (req, res) => {
   const shortId = req.params.id
+  
+  // Only handle valid shortId format (7 alphanumeric characters)
+  if (!shortId || shortId.length !== 7) {
+    return res.status(404).send('Not found')
+  }
+  
   try {
     // 1) Try cache
     const cacheKey = `short:${shortId}`
