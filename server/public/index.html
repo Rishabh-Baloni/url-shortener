@@ -393,7 +393,7 @@
             loadingDiv.classList.add('show');
 
             try {
-                const response = await fetch('http://localhost:3000/shorten', {
+                const response = await fetch('/shorten', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -413,7 +413,7 @@
                 // Display result
                 document.getElementById('shortUrlInput').value = data.shortUrl;
                 document.getElementById('visitLink').href = data.shortUrl;
-                document.getElementById('statsLink').href = `http://localhost:3000/stats/${data.shortId}`;
+                document.getElementById('statsLink').href = `/stats/${data.shortId}`;
                 document.getElementById('clicks').textContent = '0';
                 document.getElementById('created').textContent = 'Just now';
                 
@@ -442,7 +442,7 @@
 
         async function fetchStats(shortId) {
             try {
-                const response = await fetch(`http://localhost:3000/stats/${shortId}`);
+                const response = await fetch(`/stats/${shortId}`);
                 if (response.ok) {
                     const stats = await response.json();
                     const clicksElement = document.getElementById('clicks');
@@ -519,7 +519,7 @@
             recentList.innerHTML = recentUrls.map(item => `
                 <div class="recent-item">
                     <a href="${item.shortUrl}" class="recent-short" target="_blank">
-                        ${item.shortUrl.replace('http://localhost:3000/', '')}
+                        ${item.shortUrl.split('/').pop()}
                     </a>
                     <span style="color: #999; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px;">
                         → ${item.originalUrl}
