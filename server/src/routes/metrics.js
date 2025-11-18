@@ -4,7 +4,7 @@ const UrlModel = require('../models/urlModel');
 const cache = require('../lib/cache');
 
 // Performance metrics endpoint
-router.get('/metrics', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     // Get total URLs created
     const totalUrls = await UrlModel.countDocuments();
