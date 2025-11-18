@@ -10,6 +10,12 @@ A high-performance URL shortener with intelligent caching, real-time analytics, 
 
 **Interview-Ready**: See [INTERVIEW_PREP.md](./INTERVIEW_PREP.md) for deep technical discussions on caching, scaling, atomicity, and failure scenarios
 
+📚 **Documentation**:
+- [INTERVIEW_PREP.md](./INTERVIEW_PREP.md) - System design deep dive (cache, scaling, failures, race conditions)
+- [RESUME_GUIDE.md](./RESUME_GUIDE.md) - Resume bullets, elevator pitch, interview talking points
+- [results/ANALYSIS.md](./results/ANALYSIS.md) - Load test results and performance analysis
+- [IMPROVEMENTS_SUMMARY.md](./IMPROVEMENTS_SUMMARY.md) - How this project went from 8.9/10 to 9.5/10
+
 ## 🚀 Tech Stack
 
 - **Backend**: Node.js 22.x, Express 5.1
