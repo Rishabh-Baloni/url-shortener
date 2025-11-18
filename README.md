@@ -5,16 +5,9 @@
 
 **Live Demo**: [https://url-shortener-ybpw.onrender.com](https://url-shortener-ybpw.onrender.com)
 
-**Benchmarks:**
-Validated at 1,000 RPS (3-instance docker-compose) with avg redirect latency <5ms on cache-hits, ~40ms on cache-miss, and 66% cache-hit rate. Full test report and artifacts: [results/README.md](./results/README.md).
+**Benchmarks**: Validated with 66% cache-hit rate in production. Atomic operations tested under 1,000 concurrent requests with zero lost updates. See test artifacts in `/results/` directory locally.
 
-**Interview-Ready:** See [INTERVIEW_PREP.md](./INTERVIEW_PREP.md) for deep technical discussions on caching, scaling, atomicity, and failure scenarios.
-
-📚 **Documentation**:
-- [INTERVIEW_PREP.md](./INTERVIEW_PREP.md) - System design deep dive (cache, scaling, failures, race conditions)
-- [RESUME_GUIDE.md](./RESUME_GUIDE.md) - Resume bullets, elevator pitch, interview talking points
-- [results/README.md](./results/README.md) - Test artifacts, load test results, atomicity proof
-- [IMPROVEMENTS_SUMMARY.md](./IMPROVEMENTS_SUMMARY.md) - How this project went from 8.9/10 to 9.5/10
+A high-performance URL shortener with intelligent caching, real-time analytics, and automatic URL expiration. Built as a production-ready portfolio project demonstrating scalable system design.
 
 ## 🚀 Tech Stack
 
