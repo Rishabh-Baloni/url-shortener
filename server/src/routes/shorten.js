@@ -16,7 +16,11 @@ router.post('/', async (req, res) => {
       exists = await Url.findOne({ shortId })
     } while (exists)
 
-    const doc = new Url({ shortId, originalUrl: url })
+    const doc = new Url({ 
+      shortId, 
+      originalUrl: url,
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000) // 5 minutes from now
+    })
     await doc.save()
 
     // warm cache

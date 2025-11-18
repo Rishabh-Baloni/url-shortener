@@ -16,8 +16,17 @@ router.get('/:id', async (req, res) => {
     const cacheKey = `short:${shortId}`
     const cached = await get(cacheKey)
     if (cached && cached.originalUrl) {
-      // increment analytics async (do not block redirect)
-      Url.updateOne({ shortId }, { $inc: { clicks: 1 }, $set: { lastAccessed: new Date() } }).exec()
+      // increment analytics async and extend expiration to 1 day
+      Url.updateOne(
+        { shortId }, 
+        { 
+          $inc: { clicks: 1 }, 
+          $set: { 
+            lastAccessed: new Date(),
+            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 1 day from now
+          } 
+        }
+      ).exec()
       return res.redirect(cached.originalUrl)
     }
 
@@ -29,6 +38,7 @@ router.get('/:id', async (req, res) => {
     await set(cacheKey, { originalUrl: record.originalUrl })
     record.clicks += 1
     record.lastAccessed = new Date()
+    record.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 1 day from now
     await record.save()
 
     return res.redirect(record.originalUrl)
