@@ -40,8 +40,25 @@
         .subtitle {
             text-align: center;
             color: #666;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 1.1em;
+        }
+        
+        .dashboard-link {
+            display: block;
+            text-align: center;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 600;
+            padding: 10px;
+            background: #f0f0ff;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .dashboard-link:hover {
+            background: #e0e0ff;
         }
 
         .input-group {
@@ -283,6 +300,8 @@
     <div class="container">
         <h1>🔗 URL Shortener</h1>
         <p class="subtitle">Shorten your links instantly and track clicks</p>
+        
+        <a href="/dashboard.html" class="dashboard-link">📊 View Performance Dashboard</a>
 
         <div class="input-group">
             <label for="longUrl">Enter your long URL</label>

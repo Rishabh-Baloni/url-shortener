@@ -203,10 +203,34 @@ url-shortener/
 - Environment variable configuration
 - Input validation
 
+## 🆕 Recent Enhancements
+
+### Quick Wins (Implemented)
+- ✅ **Rate Limiting**: IP-based throttling to prevent abuse
+- ✅ **Health Check**: `/health` endpoint for production monitoring
+- ✅ **Performance Dashboard**: Real-time metrics at `/dashboard.html`
+- ✅ **Unit Tests**: 27 passing tests with Jest (ID generation, URL validation, rate limiting, schema validation)
+
+### Performance Dashboard Features
+- Total URLs created and clicks tracked
+- Top 10 most clicked URLs
+- Recent activity (24h)
+- System metrics (uptime, memory, Node version)
+- Auto-refreshes every 5 seconds
+
+### Testing
+```bash
+# Run unit tests
+npm test
+
+# View coverage report
+npm test -- --coverage
+```
+
 ## 🎨 Future Enhancements (Optional)
 
 - [ ] Custom vanity URLs
-- [ ] Analytics dashboard
+- [ ] Integration tests with MongoDB/Redis mocks
 - [ ] Unique visitor tracking (HyperLogLog)
 - [ ] Multi-region Redis cluster
 - [ ] Prometheus + Grafana monitoring

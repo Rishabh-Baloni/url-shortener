@@ -8,6 +8,8 @@ const cors = require('cors')
 const shortenRoute = require('./routes/shorten')
 const redirectRoute = require('./routes/redirect')
 const statsRoute = require('./routes/stats')
+const healthRoute = require('./routes/health')
+const metricsRoute = require('./routes/metrics')
 
 const app = express()
 
@@ -23,11 +25,13 @@ app.use(cors())
 app.use(morgan('tiny'))
 app.use(express.json())
 
-// optional rate limit middleware for POSTs
-// const rateLimit = require('./lib/rateLimit')
-// app.use('/shorten', rateLimit)
+// Rate limiting for POST endpoints
+const rateLimit = require('./lib/rateLimit')
+app.use('/shorten', rateLimit)
 
 // API routes first
+app.use('/health', healthRoute)
+app.use('/metrics', metricsRoute)
 app.use('/shorten', shortenRoute)
 app.use('/stats', statsRoute)
 
