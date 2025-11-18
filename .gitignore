@@ -17,6 +17,14 @@ QUICK_WINS_SUMMARY.md
 USER_GUIDE.md
 WHAT_OTHERS_SEE.md
 RENDER_DEPLOY.md
+DEMO_INSTRUCTIONS.md
+IMPROVEMENTS_SUMMARY.md
 Plan.txt
 Rules.txt
 test-app.ps1
+
+# Keep only main README.md visible on GitHub
+INTERVIEW_PREP.md
+RESUME_GUIDE.md
+results/README.md
+results/ANALYSIS.md
